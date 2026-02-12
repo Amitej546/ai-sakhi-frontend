@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smooth theme transition */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Base styles */
+html, body {
+  @apply min-h-screen;
+}
+
+/* Light mode (default) */
+body {
+  @apply bg-gray-100 text-gray-800;
+}
+
+/* Dark mode (correct way) */
+html.dark body {
+  @apply bg-gray-900 text-gray-100;
+}
+
+/* Improve scrollbars (optional professional touch) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-200 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-indigo-500 rounded-full;
+}
