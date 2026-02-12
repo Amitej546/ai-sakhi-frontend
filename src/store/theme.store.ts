@@ -1,31 +1,22 @@
 import { create } from "zustand";
 
-type Theme = "light" | "dark";
-
 interface ThemeState {
-  theme: Theme;
+  darkMode: boolean;
   toggleTheme: () => void;
-  setTheme: (theme: Theme) => void;
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  theme:
-    (localStorage.getItem("theme") as Theme) ||
-    (window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light"),
-
+  darkMode: false,
   toggleTheme: () =>
     set((state) => {
-      const newTheme = state.theme === "dark" ? "light" : "dark";
-      localStorage.setItem("theme", newTheme);
-      document.documentElement.classList.toggle("dark", newTheme === "dark");
-      return { theme: newTheme };
-    }),
+      const newMode = !state.darkMode;
 
-  setTheme: (theme: Theme) => {
-    localStorage.setItem("theme", theme);
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    set({ theme });
-  },
+      if (newMode) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+
+      return { darkMode: newMode };
+    }),
 }));

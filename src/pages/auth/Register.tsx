@@ -1,72 +1,102 @@
-import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuthStore } from "../../store/auth.store";
 
 export default function Register() {
   const navigate = useNavigate();
+  const register = useAuthStore((state) => state.register);
 
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleRegister = (e: React.FormEvent) => {
+  const validatePassword = (pwd: string) => {
+    const regex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(pwd);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !email || !password) {
-      toast.error("All fields required");
+    if (!username || !email || !password) {
+      setError("All fields are required.");
       return;
     }
 
-    const user = { name, email, password };
-    localStorage.setItem("registeredUser", JSON.stringify(user));
+    if (!validatePassword(password)) {
+      setError(
+        "Password must be 8+ chars, start with capital letter, include number & special character."
+      );
+      return;
+    }
 
-    toast.success("Registration successful! Please login.");
+    register(username, email, password);
+
+    // Redirect to Login (NOT Dashboard)
     navigate("/");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-950">
-      <form
-        onSubmit={handleRegister}
-        className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold text-center text-indigo-600">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-md">
+        
+        <h2 className="text-2xl font-bold text-center text-indigo-600 dark:text-indigo-400 mb-6">
           Create Account
         </h2>
 
-        <input
-          placeholder="Name"
-          className="w-full mt-4 border p-2 rounded dark:bg-gray-800"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        {error && (
+          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+        )}
 
-        <input
-          placeholder="Email"
-          className="w-full mt-3 border p-2 rounded dark:bg-gray-800"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mt-3 border p-2 rounded dark:bg-gray-800"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border dark:bg-gray-700 dark:border-gray-600"
+            required
+          />
 
-        <button className="w-full mt-6 bg-indigo-600 text-white py-2 rounded">
-          Register
-        </button>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border dark:bg-gray-700 dark:border-gray-600"
+            required
+          />
 
-        <p className="text-center text-sm mt-4">
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border dark:bg-gray-700 dark:border-gray-600"
+            required
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold"
+          >
+            Register
+          </button>
+        </form>
+
+        <p className="text-center text-sm mt-6 text-gray-600 dark:text-gray-300">
           Already have an account?{" "}
-          <Link to="/" className="text-indigo-600">
+          <Link
+            to="/"
+            className="text-indigo-600 dark:text-indigo-400 font-medium"
+          >
             Login
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }

@@ -1,25 +1,15 @@
 import AppLayout from "../../components/layout/AppLayout";
 import { useAuthStore } from "../../store/auth.store";
-import { useThemeStore } from "../../store/theme.store";
 
 export default function Profile() {
-  const user = useAuthStore((s) => s.user);
-  const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const user = useAuthStore((state) => state.user);
 
   return (
     <AppLayout>
-      <div className="max-w-md mx-auto bg-white dark:bg-gray-900 p-6 rounded shadow">
-        <h2 className="text-2xl font-bold mb-4">Profile</h2>
-
-        <p className="mb-2"><strong>Name:</strong> {user?.name}</p>
-        <p className="mb-4"><strong>Email:</strong> {user?.email}</p>
-
-        <button
-          onClick={toggleTheme}
-          className="bg-indigo-600 text-white px-4 py-2 rounded"
-        >
-          Toggle Theme
-        </button>
+      <div className="max-w-md mx-auto bg-white dark:bg-gray-900 p-6 rounded-xl shadow mt-10">
+        <h2 className="text-xl font-bold mb-4">Profile</h2>
+        <p><strong>Name:</strong> {user?.username}</p>
+        <p><strong>Email:</strong> {user?.email}</p>
       </div>
     </AppLayout>
   );

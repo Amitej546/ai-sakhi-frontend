@@ -1,66 +1,89 @@
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/auth.store";
 import { useThemeStore } from "../../store/theme.store";
-import { useLanguageStore } from "../../store/language.store";
 
-export default function Navbar({
-  onMenuClick,
-}: {
-  onMenuClick?: () => void;
-}) {
+export default function Navbar() {
   const navigate = useNavigate();
-  const logout = useAuthStore((s) => s.logout);
-  const { theme, toggleTheme } = useThemeStore();
-  const { setLang } = useLanguageStore();
+  const logout = useAuthStore((state) => state.logout);
+  const { darkMode, toggleTheme } = useThemeStore();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
-    <div className="h-14 bg-white dark:bg-gray-950 border-b dark:border-gray-800 flex items-center justify-between px-4 md:px-6 shadow-sm">
+    <header className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md z-50">
+      
+      {/* Max width container (ENTERPRISE WRAPPER) */}
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
 
-      {/* Left Side */}
-      <div className="flex items-center gap-3">
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={onMenuClick}
-          className="md:hidden text-xl"
-        >
-          ☰
-        </button>
-
-        <h1 className="text-lg font-bold text-indigo-600 dark:text-indigo-400">
+        {/* App Title */}
+        <h1 className="text-white text-xl md:text-2xl font-semibold tracking-wide">
           AI Sakhi
         </h1>
+
+        {/* Right Controls */}
+        <div className="flex items-center gap-3">
+
+          {/* Language Switch */}
+          <select
+            className="
+              px-2
+              py-1
+              rounded
+              text-sm
+              bg-white
+              text-gray-800
+              dark:bg-gray-800
+              dark:text-white
+              border
+              border-gray-300
+              dark:border-gray-600
+              focus:outline-none
+            "
+            onChange={(e) => localStorage.setItem("lang", e.target.value)}
+          >
+            <option value="en">EN</option>
+            <option value="hi">हिन्दी</option>
+            <option value="te">తెలుగు</option>
+          </select>
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="
+              px-3
+              py-1
+              rounded
+              text-sm
+              bg-white
+              dark:bg-gray-800
+              text-gray-800
+              dark:text-white
+              hover:opacity-90
+            "
+          >
+            {darkMode ? "🌙" : "☀️"}
+          </button>
+
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="
+              px-3
+              py-1
+              rounded
+              text-sm
+              bg-red-500
+              hover:bg-red-600
+              text-white
+            "
+          >
+            Logout
+          </button>
+        </div>
       </div>
-
-      {/* Right Side */}
-      <div className="flex items-center gap-2 md:gap-4">
-
-        <select
-          onChange={(e) => setLang(e.target.value as any)}
-          className="hidden md:block px-2 py-1 rounded border dark:bg-gray-800 dark:text-white text-sm"
-        >
-          <option value="en">EN</option>
-          <option value="hi">HI</option>
-          <option value="te">TE</option>
-        </select>
-
-        <button
-          onClick={toggleTheme}
-          className="px-2 py-1 rounded bg-gray-200 dark:bg-gray-800 text-sm"
-        >
-          {theme === "dark" ? "☀" : "🌙"}
-        </button>
-
-        <button
-          onClick={() => {
-            logout();
-            navigate("/");
-          }}
-          className="px-3 py-1 bg-red-500 text-white rounded text-sm"
-        >
-          Logout
-        </button>
-      </div>
-    </div>
+    </header>
   );
 }

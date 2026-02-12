@@ -1,39 +1,51 @@
 import { NavLink } from "react-router-dom";
 
+const navItems = [
+  { name: "Dashboard", path: "/dashboard", icon: "📊" },
+  { name: "AI Sakhi", path: "/tutor", icon: "🌸" },
+  { name: "Progress", path: "/progress", icon: "📈" },
+  { name: "Resources", path: "/resources", icon: "📚" },
+  { name: "Schemes", path: "/schemes", icon: "🏛️" },
+  { name: "Profile", path: "/profile", icon: "👤" },
+];
+
 export default function Sidebar() {
-  const linkClass =
-    "block px-4 py-3 rounded-lg transition hover:bg-gray-200 dark:hover:bg-gray-800";
-
   return (
-    <aside className="w-64 min-h-screen bg-white dark:bg-gray-900 border-r dark:border-gray-700 p-4">
-
-      <nav className="flex flex-col gap-2">
-
-        <NavLink to="/dashboard" className={linkClass}>
-          📊 Dashboard
+    <div
+      className="
+        hidden md:flex
+        w-64
+        flex-col
+        bg-white
+        dark:bg-gray-900
+        border-r
+        dark:border-gray-700
+        p-4
+        space-y-2
+        min-h-screen
+      "
+    >
+      {navItems.map((item) => (
+        <NavLink
+          key={item.name}
+          to={item.path}
+          className={({ isActive }) =>
+            `
+            flex items-center gap-3
+            p-3 rounded-lg
+            transition
+            ${
+              isActive
+                ? "bg-indigo-600 text-white"
+                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+            }
+          `
+          }
+        >
+          <span>{item.icon}</span>
+          <span className="font-medium">{item.name}</span>
         </NavLink>
-
-        <NavLink to="/tutor" className={linkClass}>
-          🌸 AI Sakhi
-        </NavLink>
-
-        <NavLink to="/progress" className={linkClass}>
-          📈 Progress
-        </NavLink>
-
-        <NavLink to="/resources" className={linkClass}>
-          📚 Resources
-        </NavLink>
-
-        <NavLink to="/schemes" className={linkClass}>
-          🏛 Schemes
-        </NavLink>
-
-        <NavLink to="/profile" className={linkClass}>
-          👤 Profile
-        </NavLink>
-
-      </nav>
-    </aside>
+      ))}
+    </div>
   );
 }

@@ -1,72 +1,77 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../../store/auth.store";
-import toast from "react-hot-toast";
 
 export default function Login() {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
 
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState(""); // username OR email
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      toast.error("Please enter email and password");
+    if (!identifier || !password) {
+      setError("All fields are required.");
       return;
     }
 
-    // Mock authentication
-    login({
-      name: "User",
-      email,
-    });
+    // Simulated authentication
+    const success = login(identifier, password);
 
-    toast.success("Login Successful");
-    navigate("/dashboard");
+    if (success) {
+      navigate("/dashboard");
+    } else {
+      setError("Invalid credentials.");
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-
-      <form
-        onSubmit={handleLogin}
-        className="bg-white dark:bg-gray-950 p-8 rounded-xl shadow-lg w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold text-center text-indigo-600 dark:text-indigo-400">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-md">
+        
+        <h2 className="text-2xl font-bold text-center text-indigo-600 dark:text-indigo-400 mb-6">
           Welcome Back
         </h2>
 
-        <div className="mt-6 space-y-4">
+        {error && (
+          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+        )}
 
+        <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* Username or Email */}
           <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border px-4 py-3 rounded-lg dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            type="text"
+            placeholder="Username or Email"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border dark:bg-gray-700 dark:border-gray-600"
+            required
           />
 
+          {/* Password */}
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border px-4 py-3 rounded-lg dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-xl border dark:bg-gray-700 dark:border-gray-600"
+            required
           />
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold"
           >
             Login
           </button>
+        </form>
 
-        </div>
-
-        <p className="text-center text-sm mt-6 dark:text-gray-400">
+        {/* REGISTER LINK RESTORED */}
+        <p className="text-center text-sm mt-6 text-gray-600 dark:text-gray-300">
           Don’t have an account?{" "}
           <Link
             to="/register"
@@ -75,7 +80,7 @@ export default function Login() {
             Register
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }
